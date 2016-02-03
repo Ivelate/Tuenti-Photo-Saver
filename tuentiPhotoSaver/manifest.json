@@ -2,7 +2,7 @@
     "name": "Tuenti Photo Saver: Guarda tus fotos en el PC",
 	"short_name": "Tuenti Photo Saver",
     "description": "Descargador de fotos de tuenti, descarga todas las fotos del album en el que te encuentres.",
-    "version": "1.2",
+    "version": "1.4.1",
 	"icons": { "19": "icon.png",
           "128": "icon128.png" },
     "permissions": [

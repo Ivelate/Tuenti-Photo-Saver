@@ -18,11 +18,12 @@ function updateDownloadRoute()
 function startDownloading()
 {
 	var route=inputText.value.trim();
+	var longtimeout=document.getElementById('longtimeout').checked;
 	if(route.slice(-1) != '\\' || route.slice(-1) != '/' ) route=route+'/';
 	
 	//chrome.tabs.executeScript(null, {file: "tuenti_album.js"});
 	chrome.tabs.executeScript(null, {
-		code: 'var route = "tuenti_photo_saver/'+route+'";' //Injects the destination route
+		code: 'var paramData = {route:"tuenti_photo_saver/'+route+'",longtimeout:'+longtimeout+'};' //Injects the destination route
 	}, function() {
 		chrome.tabs.executeScript(null, {file: "tuenti_album.js"}); //Injects the download album script
 		window.close(); //Closes the popup window

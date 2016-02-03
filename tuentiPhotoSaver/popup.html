@@ -6,10 +6,16 @@
   </head>
   <body>
     <h1>Tuenti Photo Saver</h1>
+	Importante:<br>
+	<font color="red">- No cambiar de pesta&ntilde;a durante la descarga<br>
+	- Verificar que el idioma de tuenti esta en Espa&ntilde;ol (Espa&ntilde;a)<br>
+	- Desmarcar la casilla "Preguntar donde se guardara cada archivo antes de descargarlo", en configuracion avanzada de Chrome, descargas.<br><br>
+	</font>
 	Inserte el nombre de la carpeta en la que se guardara el album de Tuenti actual:<br>
 	<input type="text" id="downloadfolder">
     <input type="submit" value="Iniciar Descarga" id="submitroute">
 	<p> La ruta actual de guardado es (Dentro de la carpeta de descargas de Chrome por defecto): </p>
 	<p id="rutasave"> /tuenti_past_saver/</p>
+	<input type="checkbox" id="longtimeout">Modo de larga espera (Espera mucho antes de empezar a descargar, usar al descargar albumes muy grandes, o si se descargan muchas menos fotos de las que deben)</input>
   </body>
 </html>

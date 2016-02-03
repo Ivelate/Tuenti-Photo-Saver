@@ -1,3 +1,5 @@
+var route=paramData.route;
+var longtimeout=paramData.longtimeout;
 var albumBody=document.getElementById('albumBody');
 var currenthref=window.location.href;
 
@@ -8,6 +10,36 @@ var scrolled = false;
 var lastScrolled=0;
 var cont=0;
 
+//Gets a date in Tuenti verbose format and returns it in YYYY-MM-DD_HHMM format
+function compactDate(verboseDate)
+{
+	var vd=verboseDate.trim();
+	vd=vd.replace(",","");vd=vd.replace(",","");
+    var tab = vd.split(" ");
+	var day=tab[0];
+	var month=tab[2];
+	var year=tab[3];
+	var time=tab[6];
+	
+	if(month == "enero") month="01";
+	else if(month == "febrero") month="02";
+	else if(month == "marzo") month="03";
+	else if(month == "abril") month="04";
+	else if(month == "mayo") month="05";
+	else if(month == "junio") month="06";
+	else if(month == "julio") month="07";
+	else if(month == "agosto") month="08";
+	else if(month == "septiembre") month="09";
+	else if(month == "octubre") month="10";
+	else if(month == "noviembre") month="11";
+	else if(month == "diciembre") month="12";
+	
+	if(day.length<2) day="0"+day;
+	
+	var time=time.replace(":","");
+	
+	return year+"-"+month+"-"+day+"_"+time;
+}
 //Downloads a photo, contained in link[current]
 function downloadPhoto(links,current)
 {
@@ -23,7 +55,7 @@ function downloadPhoto(links,current)
 			albumBody.innerHTML="<li><h1><br>¡Descarga exitosa!</h1></li>";
 		}
 }
-
+var errorCont=0;
 //Tries to get a photo link (Waits till its open)
 function fetchPhoto(links,current,cont)
 {
@@ -37,8 +69,20 @@ function fetchPhoto(links,current,cont)
 	}
 	else
 	{
+		//Get the photo date
+		var dateData=document.getElementsByClassName('h-date h-stext');
+		var verboseDate=dateData[0].innerHTML;
+		var compactedDate=""+errorCont; //If some error happens, the date will be printed like this.
+		try{
+			compactedDate=compactDate(verboseDate); //Turn to compact
+		}
+		catch(err){
+			alert('Error parseando la fecha: Asegurate de tener el idioma de Tuenti en Castellano. Si ya lo tienes y esta es la primera vez que pasa, ignora este mensaje. La foto actual tendra de nombre '+errorCont+'.jpg. Para ignorar todos los siguientes errores, pulsa en "Impedir que la pagina cree cuadros de dialogo adicionales"');
+			errorCont++;
+		}
+		
 		//Downloads the photo
-		chrome.runtime.sendMessage({"link": image.src , "cont":current,"route":route}, function(response) {});
+		chrome.runtime.sendMessage({"link": image.src , "name":compactedDate,"route":route}, function(response) {});
 		image.parentNode.removeChild(image); //Deletes the photo from the screen
 		downloadPhoto(links,current+1);
 	}
@@ -51,13 +95,9 @@ function onFullScrollDown(initialChild)
 	var links=[];
 	for(i = initialChild; i < allPhotos.length ; i++)
 	{
-		if(allPhotos[i].getElementsByClassName("thumb")[0].href === undefined){
-			alert(i);
-			alert(allPhotos[i].innerHTML);
-			setTimeout(function(){onFullScrollDown(i)},500);
-			break;
+		if(allPhotos[i].getElementsByClassName("thumb")[0] !== undefined) {
+			links[i]=allPhotos[i].getElementsByClassName("thumb")[0];
 		}
-		else links[i]=allPhotos[i].getElementsByClassName("thumb")[0];
 	}
 
 	if(i==allPhotos.length) {
@@ -80,9 +120,10 @@ function scrollDown()
 	}	
 	else{
 		cont++;
-		if(cont<20) setTimeout(function(){scrollDown()},200);
-
+		if(longtimeout&&cont <150) setTimeout(function(){scrollDown()},200);
+		else if(cont<25) setTimeout(function(){scrollDown()},200);
 		else {
+			cont=0;
 			onFullScrollDown(0);
 		}
 	}

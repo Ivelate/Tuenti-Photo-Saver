@@ -10,12 +10,10 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     
 	if (request.link !== undefined) 
 	{
-		var photostr=""+request.cont;
-		while(photostr.length<6) photostr="0"+photostr;
 
 		chrome.downloads.download({
   			url: request.link,
-  			filename: request.route+photostr+".jpg"
+  			filename: request.route+request.name+".jpg"
 		});
 		sendResponse({});
 	}
