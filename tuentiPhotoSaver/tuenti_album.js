@@ -11,17 +11,8 @@ var lastScrolled=0;
 var cont=0;
 
 //Gets a date in Tuenti verbose format and returns it in YYYY-MM-DD_HHMM format
-function compactDate(verboseDate)
-{
-	var vd=verboseDate.trim();
-	vd=vd.replace(",","");vd=vd.replace(",","");
-    var tab = vd.split(" ");
-	var day=tab[0];
-	var month=tab[2];
-	var year=tab[3];
-	var time=tab[6];
-	
-	var nombreMeses = {
+
+var nombreMeses = { //Global month-number association table (In spanish)
 	    "enero" : "01",
 	    "febrero" : "02",
 	    "marzo" : "03",
@@ -35,6 +26,15 @@ function compactDate(verboseDate)
 	    "noviembre" : "11",
 	    "diciembre" : "12"
 	};
+function compactDate(verboseDate)
+{
+	var vd=verboseDate.trim();
+	vd=vd.replace(",","");vd=vd.replace(",","");
+    var tab = vd.split(" ");
+	var day=tab[0];
+	var month=tab[2];
+	var year=tab[3];
+	var time=tab[6];
 	
 	month = nombreMeses[month];
 	
