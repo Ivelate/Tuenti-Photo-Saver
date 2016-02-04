@@ -21,18 +21,22 @@ function compactDate(verboseDate)
 	var year=tab[3];
 	var time=tab[6];
 	
-	if(month == "enero") month="01";
-	else if(month == "febrero") month="02";
-	else if(month == "marzo") month="03";
-	else if(month == "abril") month="04";
-	else if(month == "mayo") month="05";
-	else if(month == "junio") month="06";
-	else if(month == "julio") month="07";
-	else if(month == "agosto") month="08";
-	else if(month == "septiembre") month="09";
-	else if(month == "octubre") month="10";
-	else if(month == "noviembre") month="11";
-	else if(month == "diciembre") month="12";
+	var nombreMeses = {
+	    "enero" : "01",
+	    "febrero" : "02",
+	    "marzo" : "03",
+	    "abril" : "04",
+	    "mayo" : "05",
+	    "junio" : "06",
+	    "julio" : "07",
+	    "agosto" : "08",
+	    "septiembre" : "09",
+	    "octubre" : "10",
+	    "noviembre" : "11",
+	    "diciembre" : "12"
+	};
+	
+	month = nombreMeses[month];
 	
 	if(day.length<2) day="0"+day;
 	
