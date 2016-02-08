@@ -26,6 +26,7 @@ var nombreMeses = { //Global month-number association table (In spanish)
 	    "noviembre" : "11",
 	    "diciembre" : "12"
 	};
+	
 function compactDate(verboseDate)
 {
 	var vd=verboseDate.trim();
@@ -36,7 +37,7 @@ function compactDate(verboseDate)
 	var year=tab[3];
 	var time=tab[6];
 	
-	month = nombreMeses[month];
+	month=nombreMeses[month];
 	
 	if(day.length<2) day="0"+day;
 	
@@ -50,7 +51,7 @@ function downloadPhoto(links,current)
 		if(current<links.length)
 		{
 			links[current].click();
-			fetchPhoto(links,current,0);
+			fetchPhoto(links,current,0,0);
 		}
 		else{
 			//Download finished!
@@ -61,14 +62,33 @@ function downloadPhoto(links,current)
 }
 var errorCont=0;
 //Tries to get a photo link (Waits till its open)
-function fetchPhoto(links,current,cont)
+function fetchPhoto(links,current,cont,retry)
 {
+	//Used to retry fetching the img at random amounts of time (Tuenti doesnt like fixed amounts for some people it seems)
+	function rand(min,max,interval)
+	{
+		if (typeof(interval)==='undefined') interval = 1;
+		var r = Math.floor(Math.random()*(max-min+interval)/interval);
+		return r*interval+min;
+	}
+
 	var image=document.getElementById('photo_image');
 	if(image == null) {
-		if(cont!=5) setTimeout(function(){fetchPhoto(links,current,cont+1)},500);
+		//If we are waiting for the image to load, we wait 2'5s. If we are waiting for it to close, we only wait 1s
+		if(cont!=5&&(retry!=-1||cont<3)) {
+			setTimeout(function(){fetchPhoto(links,current,cont+1,retry)},rand(500,600,20));
+		}
 		else{
-			links[current].click();
-			setTimeout(function(){fetchPhoto(links,current,0)},500);
+			if(retry==0){
+				//Image not loaded in 2'5s? Its not gonna load: close it and reopen
+				document.getElementsByClassName('icon i-cross i-m i-default-medium i-hover-hard h-right lbx-close i-op-hard i-white')[0].click();
+				setTimeout(function(){fetchPhoto(links,current,0,-1)},rand(500,600,20));
+			}
+			else{
+				//Open the image
+				links[current].click();
+				setTimeout(function(){fetchPhoto(links,current,0,retry+1)},rand(500,600,20));
+			}
 		}
 	}
 	else
@@ -88,6 +108,7 @@ function fetchPhoto(links,current,cont)
 		//Downloads the photo
 		chrome.runtime.sendMessage({"link": image.src , "name":compactedDate,"route":route}, function(response) {});
 		image.parentNode.removeChild(image); //Deletes the photo from the screen
+
 		downloadPhoto(links,current+1);
 	}
 }
